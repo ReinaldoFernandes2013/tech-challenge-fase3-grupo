@@ -1,0 +1,26 @@
+# Ambientes Virtuais (Pastas locais pesadas)
+venv/
+ENV/
+env/
+
+# Caches do Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# IDEs e configurações locais
+.vscode/
+.idea/
+.DS_Store
+
+# Dados locais (Garante conformidade com o FinOps e tamanho do Git)
+data/X_train.parquet
+data/X_test.parquet
+data/y_train.parquet
+data/y_test.parquet
+data/dados_gold_prod.parquet
+
+# Modelos Serializados Pesados
+models/*.pkl
