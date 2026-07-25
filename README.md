@@ -1,9 +1,9 @@
 
 # 🚀 Predição e Inteligência Analítica para Alfabetização no Brasil
 
-## FIAP Pós-Tech — AI Scientist & Machine Learning Engineering (Fase 3)
+**FIAP Pós-Tech — AI Scientist & Machine Learning Engineering (Fase 3)**
 
-Este repositório contém o ecossistema completo de Inteligência Artificial voltado para prever e segmentar o risco de não alfabetização infantil no contexto educacional brasileiro, utilizando dados analíticos integrados a partir da Camada Gold (Fase 2). A solução foi evoluída de um protótipo experimental para uma infraestrutura de produção escalável de nível corporativo (*Enterprise*).
+Este repositório contém o ecossistema completo de Inteligência Artificial voltado para prever e segmentar o risco de não alfabetização infantil no contexto educacional brasileiro, utilizando dados analíticos integrados a partir da Camada Gold (Fase 2). A solução foi evoluída de um protótipo experimental para uma infraestrutura de produção escalável de nível corporativo (Enterprise).
 
 ---
 
@@ -11,7 +11,7 @@ Este repositório contém o ecossistema completo de Inteligência Artificial vol
 
 A alfabetização na idade certa é o pilar mais crítico para o desenvolvimento social e educacional do país. Compreender o cenário atual de forma passiva impede uma atuação governamental preventiva.
 
-* **Objetivo:** Desenvolver uma solução de Machine Learning capaz de identificar precocemente alunos em zona de risco de não alfabetização (Nota SAEB < 743 pontos), permitindo a alocação preditiva de políticas públicas e reforço escolar focado.
+**Objetivo:** Desenvolver uma solução de Machine Learning capaz de identificar precocemente alunos em zona de risco de não alfabetização (Nota SAEB < 743 pontos), permitindo a alocação preditiva de políticas públicas e reforço escolar focado.
 
 ---
 
@@ -31,7 +31,7 @@ O algoritmo escolhido foi o **Random Forest Classifier**, configurado com penali
 ### Relatório de Performance Científica (Conjunto de Teste):
 
 * **Acurácia Global:** 88%
-* **Recall (Classe de Risco):** 89% (Prioridade absoluta do negócio para minimizar Falsos Negativos e garantir que nenhuma criança vulnerável fique invisível à política pública).
+* **Recall (Classe de Risco):** 89% *(Prioridade absoluta do negócio para minimizar Falsos Negativos e garantir que nenhuma criança vulnerável fique invisível à política pública).*
 * **F1-Score:** 93%
 
 ### Validação Cruzada Estratificada (5-Fold Cross-Validation):
@@ -44,7 +44,7 @@ Para garantir a estabilidade do modelo frente a flutuações amostrais e blindar
 
 Utilizando a teoria dos jogos com a biblioteca `shap` (`TreeExplainer`), mapeamos o impacto de cada variável na decisão do algoritmo. Os gráficos gerados em `images/shap_summary.png` provam que:
 
-1. O índice de **vulnerabilidade social** territorial atua como o maior impulsionador do risco preditivo.
+1. O **índice de vulnerabilidade social territorial** atua como o maior impulsionador do risco preditivo.
 2. A **baixa frequência escolar** funciona como o principal gatilho de alerta individual para evasão e declínio de proficiência.
 
 ---
@@ -59,30 +59,26 @@ Utilizando o algoritmo de partição **K-Means**, os municípios e alunos foram 
 
 ---
 
-## 🔌 1. API Assíncrona de Alta Performance & Dockerização
+## 🔌 Microsserviços e Governança MLOps
 
-Para permitir que qualquer sistema governamental (como Diários de Classe Eletrônicos ou portais de Secretarias de Educação) consuma as predições de risco em tempo real, o ecossistema expõe um microsserviço assíncrono acoplado:
+### 1. API Assíncrona de Alta Performance & Dockerização
 
-* **FastAPI Backend:** Camada de API construída em `/api/main.py`. Utiliza validação de contratos estritos e tipagem estática em runtime via `Pydantic`, mitigando quebras estruturais no recebimento do payload. Possui barreira protetiva baseada em `feature_names_in_` para garantir o correto alinhamento dimensional das matrizes de entrada antes do `predict`.
-* **Conteinerização Isolada (Dockerfile):** Arquitetura agnóstica baseada em `python:3.12-slim`. Permite o deploy imediato em qualquer nuvem pública (AWS, GCP, Azure) ou orquestradores (Kubernetes). O container expõe e roda em paralelo o **Streamlit na porta 8501** e a **FastAPI na porta 8000**, unificando a experiência de deploy local e em servidores de homologação.
+Para permitir que qualquer sistema governamental (como Diários de Classe Eletrônicos ou portais de Secretarias de Educação) consuma as predições de risco em tempo real:
 
----
+* **FastAPI Backend:** Camada de API construída em `/api/main.py`. Utiliza validação de contratos estritos e tipagem estática em runtime via Pydantic. Possui barreira protetiva baseada em `feature_names_in_` para garantir o correto alinhamento dimensional das matrizes de entrada.
+* **Conteinerização Isolada (Dockerfile):** Arquitetura agnóstica baseada em `python:3.12-slim`. Permite o deploy imediato em qualquer nuvem pública ou orquestradores (Kubernetes). O container expõe e roda em paralelo o Streamlit na porta 8501 e a FastAPI na porta 8000.
 
-## 📉 2. Governança MLOps: Monitoramento de Data Drift
+### 2. Governança MLOps: Monitoramento de Data Drift
 
-Modelos em produção sofrem degradação por mudanças estruturais no mundo real (*Data/Concept Drift*). Para mitigar essa vulnerabilidade, o sistema conta com o script autônomo `monitor_drift.py`:
+Modelos em produção sofrem degradação por mudanças estruturais no mundo real. Para mitigar essa vulnerabilidade, o sistema conta com o script autônomo `monitor_drift.py`:
 
-* **Rigor Estatístico:** Aplicação do teste não paramétrico bicaudal de **Kolmogorov-Smirnov (KS-Test)** sobre as variáveis contínuas em produção contra a distribuição de treino.
-* **Gatilho de Alerta:** Caso a hipótese nula ($H_0$) seja rejeitada ($p\text{-value} < 0.05$), indicando alteração significativa no comportamento das variáveis socioeconômicas da população atendida, o sistema emite logs automáticos sinalizando a necessidade emergencial de retreinamento da malha.
+* **Rigor Estatístico:** Aplicação do teste não paramétrico bicaudal de Kolmogorov-Smirnov (KS-Test) sobre as variáveis contínuas em produção contra a distribuição de treino.
+* **Gatilho de Alerta:** Caso a hipótese nula ($H_0$) seja rejeitada ($p\text{-value} < 0.05$), o sistema emite logs automáticos sinalizando a necessidade emergencial de retreinamento da malha.
 
----
+### 3. Automação de CI/CD para ML (GitHub Actions Workflow)
 
-## 🤖 3. Automação de CI/CD para ML (GitHub Actions Workflow)
-
-A esteira de Qualidade de Software (QA) e Ciência de Dados foi completamente automatizada através do arquivo `.github/workflows/mlops-ci.yml`.
-
-* Toda vez que um desenvolvedor submete um `git push` ou abre um *Pull Request* direcionado para as branches `main` ou `feature/pipeline-ml`, o GitHub instancia um runner Linux isolado, provisiona o interpretador Python 3.12, monta as dependências via cache de camadas e executa de forma estrita o comando `pytest -v`.
-* Se qualquer teste unitário, de integração ou regressão de predição estatística falhar, o build quebra imediatamente e o merge é bloco na raiz, impedindo que código instável alcance o ambiente produtivo.
+A esteira de Qualidade de Software (QA) e Ciência de Dados foi completamente automatizada via `.github/workflows/mlops-ci.yml`.
+Toda vez que um desenvolvedor submete um `git push` ou abre um Pull Request para as branches `main` ou `feature/pipeline-ml`, o GitHub Actions instancia um runner Linux isolado, instala as dependências via cache e executa de forma estrita o comando `pytest -v`.
 
 ---
 
@@ -107,6 +103,9 @@ tech-challenge-fase3-ml/
 │
 ├── models/                    # Pipeline serializado e persistido (.pkl)
 │
+├── notebooks/                 # Notebooks de Análise Exploratória e Experimentação
+│   └── 01_analise_e_modelagem.ipynb
+│
 ├── src/                       # Arquitetura de Scripts Modulares de Ciência de Dados
 │   ├── generate_data.py       # Gerador e calibrador de microdados educacionais
 │   ├── split_data.py          # Divisor estratificado de treino e teste
@@ -122,4 +121,96 @@ tech-challenge-fase3-ml/
 ├── Dockerfile                 # Configuração do Container Multipropósito (Streamlit + API)
 ├── monitor_drift.py           # Motor estatístico de detecção de Data Drift (KS-Test)
 └── requirements.txt           # Isolamento estrito e versionamento de dependências
+```
+
+🛠️ **Como Executar o Projeto**
+
+**Pré-requisitos**
+
+* Git
+* Python 3.12+
+* Docker (Opcional, mas recomendado)
+
+## Opção 1: Execução via Docker (Recomendado)
+
+Construir a Imagem Container:
+
+```
+docker build -t tech-challenge-fase3 .
+```
+
+**2 Executar o Container:**
+
+```
+docker run -d -p 8000:8000 -p 8501:8501 --name app-ml tech-challenge-fase3
+```
+
+**3 Acessar as Aplicações:**
+
+* **Painel Interativo (Streamlit):** `http://localhost:8501`
+* **Documentação Interativa da API (Swagger):** `http://localhost:8000/docs`
+
+## Opção 2: Execução Local (Desenvolvimento)
+
+**1 Clonar o Repositório:**
+
+```
+git clone [https://github.com/ReinaldoFernandes2013/tech-challenge-fase3-grupo.git](https://github.com/ReinaldoFernandes2013/tech-challenge-fase3-grupo.git)
+cd tech-challenge-fase3-grupo
+```
+
+
+**2 Criar e Ativar o Ambiente Virtual:**
+
+```
+python -m venv venv
+```
+
+
+**Linux/macOS:**
+
+```
+source venv/bin/activate
+```
+
+
+**Windows (PowerShell):**
+
+```
+.\venv\Scripts\activate
+
+3 Instalar Dependências:
+
+pip install -r requirements.txt
+```
+
+
+**4 Executar a API (FastAPI):**
+
+```
+uvicorn api.main:app --reload --port 8000
+```
+
+
+**5 Executar o Dashboard (Streamlit):**
+
+```
+streamlit run app.py
+```
+
+
+🧪 **Suíte de Testes e Validação de MLOps**
+
+Para validar localmente as asserções e testes unitários da esteira de QA antes do envio para o GitHub:
+
+# Executa todos os testes unitários e de integração com Pytest
+
+```
+pytest -v
+```
+
+# Para verificar o Drift de dados localmente:
+
+```
+python monitor_drift.py
 ```
