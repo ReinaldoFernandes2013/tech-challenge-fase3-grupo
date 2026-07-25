@@ -1,9 +1,21 @@
-
 # 🚀 Predição e Inteligência Analítica para Alfabetização no Brasil
 
 **FIAP Pós-Tech — AI Scientist & Machine Learning Engineering (Fase 3)**
 
-Este repositório contém o ecossistema completo de Inteligência Artificial voltado para prever e segmentar o risco de não alfabetização infantil no contexto educacional brasileiro, utilizando dados analíticos integrados a partir da Camada Gold (Fase 2). A solução foi evoluída de um protótipo experimental para uma infraestrutura de produção escalável de nível corporativo (Enterprise).
+Este repositório contém o ecossistema completo de Inteligência Artificial voltado para prever e segmentar o risco de não alfabetização infantil no contexto educacional brasileiro. A solução evoluiu de forma incremental ao longo das fases do programa, transicionando de um protótipo experimental para uma infraestrutura de produção e governança MLOps de nível corporativo (Enterprise).
+
+---
+
+## 📜 Linhagem do Projeto e Evolução das Fases
+
+O projeto foi construído sobre uma esteira de maturidade analítica e engenharia rigorosa:
+
+* **Fase 1 — Entendimento de Negócio e Metodologia CRISP-DM:**
+  Aplicação estrita do ciclo **CRISP-DM** (*Cross-Industry Standard Process for Data Mining*), mapeando o problema de negócio (alfabetização na idade certa), formulando as hipóteses científicas, definindo os requisitos de avaliação estatística e validando a viabilidade do projeto.
+* **Fase 2 — Engenharia de Dados e Camada Gold:**
+  Construção e refinamento dos pipelines de extração, limpeza e modelagem dimensional de microdados educacionais socioeconômicos e territoriais, culminando na persistência da **Camada Gold** (armazenada em formato `.parquet` otimizado) para consumo analítico.
+* **Fase 3 — Produção MLOps, Microsserviços e Explicabilidade (Atual):**
+  Encapsulamento do modelo preditivo em *pipelines* robustos do Scikit-Learn, conteinerização agnóstica via Docker, exposição de API assíncrona (FastAPI), monitoramento de *Data Drift* (teste KS), auditoria via SHAP/K-Means e integração de CI/CD autônomo via GitHub Actions.
 
 ---
 
@@ -17,7 +29,7 @@ A alfabetização na idade certa é o pilar mais crítico para o desenvolvimento
 
 ## 🏗️ Arquitetura e Engenharia de Atributos (MLOps)
 
-Para mitigar de forma absoluta o vazamento de dados (*data leakage*) e garantir a reprodutibilidade em produção, o pré-processamento foi encapsulado nativamente em um objeto `Pipeline` do Scikit-Learn:
+Para mitigar de forma absoluta o vazamento de dados (*data leakage*) e garantir a reprodutibilidade em produção a partir dos dados da **Camada Gold**, o pré-processamento foi encapsulado nativamente em um objeto `Pipeline` do Scikit-Learn:
 
 * **Tratamento de Dados Ausentes:** `SimpleImputer` utilizando a estratégia da mediana para neutralizar ruídos de preenchimento.
 * **Escalonamento de Features:** `RobustScaler` (baseado em quartis) aplicado nas colunas socioeconômicas (como PIB per capita) para impedir que municípios discrepantes (*outliers*) distorcessem a convergência dos pesos do modelo.
@@ -73,7 +85,7 @@ Para permitir que qualquer sistema governamental (como Diários de Classe Eletr�
 Modelos em produção sofrem degradação por mudanças estruturais no mundo real. Para mitigar essa vulnerabilidade, o sistema conta com o script autônomo `monitor_drift.py`:
 
 * **Rigor Estatístico:** Aplicação do teste não paramétrico bicaudal de Kolmogorov-Smirnov (KS-Test) sobre as variáveis contínuas em produção contra a distribuição de treino.
-* **Gatilho de Alerta:** Caso a hipótese nula ($H_0$) seja rejeitada ($p\text{-value} < 0.05$), o sistema emite logs automáticos sinalizando a necessidade emergencial de retreinamento da malha.
+* **Gatilho de Alerta:** Caso a hipótese nula ($H_0$) seja rejected ($p\text{-value} < 0.05$), o sistema emite logs automáticos sinalizando a necessidade emergencial de retreinamento da malha.
 
 ### 3. Automação de CI/CD para ML (GitHub Actions Workflow)
 
@@ -94,7 +106,7 @@ tech-challenge-fase3-ml/
 ├── api/
 │   └── main.py                # Microsserviço assíncrono de predição (FastAPI)
 │
-├── data/                      # Conjuntos de microdados educacionais (.parquet)
+├── data/                      # Microdados educacionais da Camada Gold (.parquet)
 │
 ├── docs/
 │   └── plano_implantacao_mlops.pdf # Especificação Técnica de Produção Corporativa
@@ -122,6 +134,8 @@ tech-challenge-fase3-ml/
 ├── monitor_drift.py           # Motor estatístico de detecção de Data Drift (KS-Test)
 └── requirements.txt           # Isolamento estrito e versionamento de dependências
 ```
+
+---
 
 🛠️ **Como Executar o Projeto**
 
@@ -159,20 +173,17 @@ git clone [https://github.com/ReinaldoFernandes2013/tech-challenge-fase3-grupo.g
 cd tech-challenge-fase3-grupo
 ```
 
-
 **2 Criar e Ativar o Ambiente Virtual:**
 
 ```
 python -m venv venv
 ```
 
-
 **Linux/macOS:**
 
 ```
 source venv/bin/activate
 ```
-
 
 **Windows (PowerShell):**
 
@@ -184,20 +195,17 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-
 **4 Executar a API (FastAPI):**
 
 ```
 uvicorn api.main:app --reload --port 8000
 ```
 
-
 **5 Executar o Dashboard (Streamlit):**
 
 ```
 streamlit run app.py
 ```
-
 
 🧪 **Suíte de Testes e Validação de MLOps**
 
