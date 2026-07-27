@@ -80,12 +80,19 @@ Para permitir que qualquer sistema governamental (como Diários de Classe Eletr�
 * **FastAPI Backend:** Camada de API construída em `/api/main.py`. Utiliza validação de contratos estritos e tipagem estática em runtime via Pydantic. Possui barreira protetiva baseada em `feature_names_in_` para garantir o correto alinhamento dimensional das matrizes de entrada.
 * **Conteinerização Isolada (Dockerfile):** Arquitetura agnóstica baseada em `python:3.12-slim`. Permite o deploy imediato em qualquer nuvem pública ou orquestradores (Kubernetes). O container expõe e roda em paralelo o Streamlit na porta 8501 e a FastAPI na porta 8000.
 
-### 2. Governança MLOps: Monitoramento de Data Drift
+### 2. Governança MLOps: Observabilidade e Monitoramento de Data Drift
 
-Modelos em produção sofrem degradação por mudanças estruturais no mundo real. Para mitigar essa vulnerabilidade, o sistema conta com o script autônomo `monitor_drift.py`:
+Modelos em produção sofrem degradação por mudanças estruturais no mundo real. Para mitigar essa vulnerabilidade e garantir **Observabilidade Contínua** (conforme exigido em pipelines robustos):
 
-* **Rigor Estatístico:** Aplicação do teste não paramétrico bicaudal de Kolmogorov-Smirnov (KS-Test) sobre as variáveis contínuas em produção contra a distribuição de treino.
-* **Gatilho de Alerta:** Caso a hipótese nula ($H_0$) seja rejected ($p\text{-value} < 0.05$), o sistema emite logs automáticos sinalizando a necessidade emergencial de retreinamento da malha.
+* **Registro Operacional (Logging):** Todas as predições feitas na API são persistidas automaticamente em um banco de dados local (SQLite). Isso permite auditar volumes, latências e anomalias de ingestão.
+* **Rigor Estatístico (Data Drift):** O script autônomo `monitor_drift.py` conecta-se diretamente a este banco de dados de produção e o compara com a base original da Camada Gold. Ele aplica o teste não paramétrico bicaudal de Kolmogorov-Smirnov (KS-Test).
+* **Gatilho de Alerta:** Caso a hipótese nula ($H_0$) seja rejected ($p\text{-value} < 0.05$), o sistema emite logs automáticos sinalizando a necessidade emergencial de retreinamento da malha preditiva.
+
+### 2.1. Aplicação em Políticas Públicas (IA)
+
+A Camada Gold deste ecossistema funciona como fundação para direcionar o orçamento público. Ao plugar este modelo na base real do INEP, Secretarias de Educação podem:
+- **Alocação de Verba Preditiva:** Direcionar recursos do FUNDEB antecipadamente para municípios com probabilidade de risco > 80%.
+- **Análise de Desigualdade:** Cruzar a segmentação do K-Means com os repasses federais para evidenciar gargalos de investimento infraestrutural.
 
 ### 3. Automação de CI/CD para ML (GitHub Actions Workflow)
 
@@ -119,7 +126,7 @@ tech-challenge-fase3-ml/
 │   └── 01_analise_e_modelagem.ipynb
 │
 ├── src/                       # Arquitetura de Scripts Modulares de Ciência de Dados
-│   ├── generate_data.py       # Gerador e calibrador de microdados educacionais
+│   ├── ingestao_camada_gold.py# Ingestão de dados reais em raw para a Camada Gold
 │   ├── split_data.py          # Divisor estratificado de treino e teste
 │   ├── train_model.py         # Treinamento do classificador e exportação de métricas
 │   ├── validate_model.py      # Validação cruzada robusta (Stratified K-Fold)
