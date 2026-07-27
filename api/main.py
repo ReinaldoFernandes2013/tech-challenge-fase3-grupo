@@ -3,6 +3,29 @@ from pydantic import BaseModel
 import pandas as pd
 import pickle
 import os
+import sqlite3
+from datetime import datetime
+
+def init_db():
+    conn = sqlite3.connect('predicoes.db')
+    c = conn.cursor()
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS predicoes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            timestamp DATETIME,
+            investimento_por_aluno_rs REAL,
+            taxa_frequencia_escolar REAL,
+            pib_per_capita_municipio REAL,
+            vulnerabilidade_social_index REAL,
+            infraestrutura_escola_score REAL,
+            predicao INTEGER,
+            probabilidade REAL
+        )
+    ''')
+    conn.commit()
+    conn.close()
+
+init_db()
 
 app = FastAPI(
     title="API de Predição de Risco de Alfabetização",
@@ -45,6 +68,17 @@ async def predict_risk(data: DataInput):
             
         predicao = int(pipeline.predict(df_input)[0])
         probabilidade = float(pipeline.predict_proba(df_input)[0][1])
+        
+        # 💾 Log da predição no SQLite (Histórico para monitoramento de Data Drift)
+        conn = sqlite3.connect('predicoes.db')
+        c = conn.cursor()
+        c.execute('''
+            INSERT INTO predicoes 
+            (timestamp, investimento_por_aluno_rs, taxa_frequencia_escolar, pib_per_capita_municipio, vulnerabilidade_social_index, infraestrutura_escola_score, predicao, probabilidade)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (datetime.now(), data.investimento_por_aluno_rs, data.taxa_frequencia_escolar, data.pib_per_capita_municipio, data.vulnerabilidade_social_index, data.infraestrutura_escola_score, predicao, probabilidade))
+        conn.commit()
+        conn.close()
         
         return {
             "risco_detectado": predicao == 1,

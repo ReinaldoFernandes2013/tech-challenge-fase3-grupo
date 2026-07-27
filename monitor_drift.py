@@ -1,7 +1,7 @@
-import numpy as np
 import pandas as pd
 from scipy.stats import ks_2samp
 import logging
+import sqlite3
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -13,11 +13,9 @@ def verificar_data_drift(dados_treino: pd.DataFrame, dados_producao: pd.DataFram
     logging.info("🔬 Iniciando análise de aderência estatística (Mapeamento de Data Drift)...")
     drift_detectado = False
     
-    # Avalia apenas colunas numéricas comuns em ambos os datasets
     features = [col for col in dados_treino.columns if col in dados_producao.columns]
     
     for feature in features:
-        # Executa o teste KS
         stat, p_value = ks_2samp(dados_treino[feature].dropna(), dados_producao[feature].dropna())
         
         if p_value < threshold:
@@ -33,12 +31,19 @@ def verificar_data_drift(dados_treino: pd.DataFrame, dados_producao: pd.DataFram
     return drift_detectado
 
 if __name__ == "__main__":
-    # Simulação executiva para demonstração à banca
-    np.random.seed(42)
-    colunas = ['investimento_por_aluno_rs', 'taxa_frequencia_escolar']
-    
-    df_treino_sim = pd.DataFrame(np.random.normal(5000, 500, size=(100, 2)), columns=colunas)
-    # Simula dados de produção que sofreram alterações socioeconômicas drásticas
-    df_prod_sim = pd.DataFrame(np.random.normal(3200, 400, size=(100, 2)), columns=colunas)
-    
-    verificar_data_drift(df_treino_sim, df_prod_sim)
+    logging.info("Conectando ao Data Lake (Treino) e Banco Operacional (Produção)...")
+    try:
+        # Lê a base ouro que foi usada no treino
+        df_treino = pd.read_parquet('data/X_train.parquet')
+        
+        # Lê o banco SQLite populado pela API FastAPI
+        conn = sqlite3.connect('predicoes.db')
+        df_producao = pd.read_sql_query("SELECT * FROM predicoes", conn)
+        conn.close()
+        
+        if df_producao.empty:
+            logging.info("Banco de produção vazio. Nenhuma requisição feita ainda para calcular Drift.")
+        else:
+            verificar_data_drift(df_treino, df_producao)
+    except Exception as e:
+        logging.error(f"Falha ao executar o monitoramento: {e}")
