@@ -150,6 +150,25 @@ else:
             else:
                 st.info("Aguardando ativação dos parâmetros na coluna ao lado para computar os scores estatísticos.")
 
+        # --- EXIBIÇÃO DA AUDITORIA E EXPLICABILIDADE GLOBAL (SHAP) ---
+        st.write("")
+        st.divider()
+        st.subheader("🧠 Explicabilidade Preditiva e Auditoria Científica (SHAP)")
+        st.markdown("Abaixo é apresentada a auditoria global de interpretabilidade gerada via **TreeExplainer**. O gráfico (*Summary Plot*) detalha como os pontos azuis (valores baixos) e vermelhos (valores altos) de cada variável empurram as predições do algoritmo:")
+        
+        caminho_shap_img = 'images/shap_summary.png'
+        if os.path.exists(caminho_shap_img):
+            st.image(caminho_shap_img, caption="SHAP Summary Plot — Distribuição de Impacto das Variables no Risco Preditivo", use_container_width=True)
+            
+            with st.expander("💡 **Guia Rápido de Interpretação do Gráfico SHAP**"):
+                st.markdown("""
+                * **Eixo Vertical (Variáveis):** Ordenadas por ordem de importância do topo para a base.
+                * **Cores dos Pontos:** **Vermelho** = Valor Alto da variável no mundo real; **Azul** = Valor Baixo.
+                * **Eixo Horizontal (Impacto SHAP):** Pontos à **direita do 0.0** indicam **AUMENTO do risco** de não alfabetização; pontos à **esquerda** indicam **REDUÇÃO do risco**.
+                """)
+        else:
+            st.warning("⚠️ Imagem do SHAP não encontrada em `images/shap_summary.png`. Execute `python src/explain_model.py` para gerar a auditoria.")
+
     # --- ABA 2: MAPA GEOESPACIAL ---
     with aba_mapa:
         st.subheader("🗺️ Distribuição Geográfica da Vulnerabilidade e Clusters Regionais")

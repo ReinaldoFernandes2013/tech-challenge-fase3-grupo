@@ -40,6 +40,20 @@ Para mitigar de forma absoluta o vazamento de dados (*data leakage*) e garantir 
 
 O algoritmo escolhido foi o **Random Forest Classifier**, configurado com penalização de peso (`class_weight='balanced'`) devido ao forte e realista desbalanceamento das classes (92% risco vs 8% regular).
 
+### 🌲 Fundamentação Teórica e Justificativa do Algoritmo
+
+#### **Como o Random Forest Funciona?**
+O Random Forest Classifier é um algoritmo de *Ensemble Learning* baseado na técnica de **Bagging** (*Bootstrap Aggregating*). Em vez de depender de uma única Árvore de Decisão (que possui alta tendência a decorar dados de treino e sofrer *overfitting*), o Random Forest combina a decisão de centenas de árvores independentes:
+1. **Amostragem Bootstrap:** Cada árvore é treinada com um subconjunto aleatório dos dados (com reposição).
+2. **Seleção Aleatória de Features:** Em cada nó de divisão (*split*), o algoritmo seleciona apenas um subconjunto aleatório de variáveis, forçando a diversidade entre as árvores.
+3. **Votação por Maioria (Majority Vote):** A predição final da classe ("Risco" ou "Regular") é definida por consenso votado pela maioria das árvores da floresta.
+
+#### **Por que ele e não outros algoritmos?**
+* **Regressão Logística (Descartada):** Pressupõe relações estritamente lineares, falhando em capturar interações complexas não-lineares entre IDH, vulnerabilidade social e desempenho educacional.
+* **Árvore de Decisão Simples (Descartada):** Extremamente instável e suscetível a *overfitting*.
+* **XGBoost / Gradient Boosting (Avaliados):** Embora altamente eficientes, exigem uma calibração (*tuning*) muito sensível em cenários desbalanceados e tendem a ignorar a classe minoritária sem reamostragens agressivas.
+* **Random Forest (Escolha Padrão Enterprise):** Apresentou excelente resiliência ao desbalanceamento nativo com `class_weight='balanced'`, entregando estabilidade estatística imune a flutuações amostrais e generalização consistente sem *overfitting*.
+
 ### Relatório de Performance Científica (Conjunto de Teste):
 
 * **Acurácia Global:** 88%
@@ -58,6 +72,20 @@ Utilizando a teoria dos jogos com a biblioteca `shap` (`TreeExplainer`), mapeamo
 
 1. O **índice de vulnerabilidade social territorial** atua como o maior impulsionador do risco preditivo.
 2. A **baixa frequência escolar** funciona como o principal gatilho de alerta individual para evasão e declínio de proficiência.
+
+### 💡 Guia de Leitura Prática do Gráfico SHAP (Para Gestores e Leigos)
+
+Para que qualquer tomador de decisão (mesmo sem background técnico) consiga interpretar o impacto das predições:
+
+* **Eixo Vertical (Variáveis/Features):** Estão ordenadas do topo para a base em ordem de importância. As variáveis no topo são as que mais pesam na decisão da IA.
+* **Cores dos Pontos (Valor da Variável no Mundo Real):** 
+  * 🔴 **Ponto Vermelho:** Indica um valor **ALTO** daquela variável (ex: Alta Frequência Escolar, Alto PIB).
+  * 🔵 **Ponto Azul:** Indica um valor **BAIXO** daquela variável (ex: Baixa Frequência, Baixa Vulnerabilidade).
+* **Eixo Horizontal (Impacto SHAP):**
+  * **À direita do $0.0$ (Valores Positivos):** A variável está **AUMENTANDO** o risco do aluno não se alfabetizar.
+  * **À esquerda do $0.0$ (Valores Negativos):** A variável está **REDUZINDO** o risco (atuando como fator de proteção).
+
+> **Exemplo Prático:** Se a *Frequência Escolar* apresenta um ponto **AZUL** (baixa frequência) deslocado muito à **DIREITA** do zero, a interpretação é direta: *ter baixa frequência escolar empurra o aluno com muita força para o grupo de risco*.
 
 ---
 
@@ -86,7 +114,7 @@ Modelos em produção sofrem degradação por mudanças estruturais no mundo rea
 
 * **Registro Operacional (Logging):** Todas as predições feitas na API são persistidas automaticamente em um banco de dados local (SQLite). Isso permite auditar volumes, latências e anomalias de ingestão.
 * **Rigor Estatístico (Data Drift):** O script autônomo `monitor_drift.py` conecta-se diretamente a este banco de dados de produção e o compara com a base original da Camada Gold. Ele aplica o teste não paramétrico bicaudal de Kolmogorov-Smirnov (KS-Test).
-* **Gatilho de Alerta:** Caso a hipótese nula ($H_0$) seja rejected ($p\text{-value} < 0.05$), o sistema emite logs automáticos sinalizando a necessidade emergencial de retreinamento da malha preditiva.
+* **Gatilho de Alerta:** Caso a hipótese nula ($H_0$) seja rejeitada ($p\text{-value} < 0.05$), o sistema emite logs automáticos sinalizando a necessidade emergencial de retreinamento da malha preditiva.
 
 ### 2.1. Aplicação em Políticas Públicas (IA)
 
