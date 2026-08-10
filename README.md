@@ -282,3 +282,11 @@ pytest -v
 ```
 python monitor_drift.py
 ```
+
+---
+
+## 👥 Integrantes do Grupo (Fase 3)
+- **Leonardo Jr. G. Mendoza (RM 373713):** Arquitetura MLOps, API Backend & Modelagem (FastAPI, SQLite, GridSearchCV, Data Drift)
+- **Caio Morais Rubino (RM 371492):** Análise Exploratória (EDA) & Projeções de Séries Temporais (Holt-Winters)
+- **Winny Tavares (RM 371471):** Validação Estatística (ROC-AUC) & Documentação Científica
+- **Reinaldo Fernandes (RM 371717):** Desenvolvimento Frontend (Streamlit) & Segmentação K-Means
