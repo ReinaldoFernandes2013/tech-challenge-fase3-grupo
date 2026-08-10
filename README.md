@@ -290,3 +290,20 @@ python monitor_drift.py
 - **Caio Morais Rubino (RM 371492):** AnÃ¡lise ExploratÃ³ria (EDA) & ProjeÃ§Ãµes de SÃ©ries Temporais (Holt-Winters)
 - **Winny Tavares (RM 371471):** ValidaÃ§Ã£o EstatÃ­stica (ROC-AUC) & DocumentaÃ§Ã£o CientÃ­fica
 - **Reinaldo Fernandes (RM 371717):** Desenvolvimento Frontend (Streamlit) & SegmentaÃ§Ã£o K-Means
+
+---
+
+## ?? Interface do Produto Final (Dashboard Enterprise)
+O ecossistema conta com uma interface **SOTA (State-of-the-Art)** construída em Streamlit com design Glassmorphism, que atende tanto à simulação micro (aluno individual) quanto à gestão macro (Clusters K-Means).
+
+### ?? Simulador com Explicabilidade Dinâmica (SHAP)
+Na primeira aba, o usuário testa parâmetros (Frequência Escolar, PIB, etc) e a IA responde em tempo real com o risco de evasão, além de gerar uma auditoria gráfica individual.
+
+![Simulador de Predição](images/print_simulador.png)
+![SHAP Dinâmico](images/print_shap.png)
+
+### ??? Visão Macroestratégica (Clusters e KPIs)
+Na segunda aba, os governantes têm acesso a um mapa de calor interativo cruzado com os algoritmos de clusterização para tomada de decisão federal.
+
+![Mapa do Brasil](images/print_mapa.png)
+
