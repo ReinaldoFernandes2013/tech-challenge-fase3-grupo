@@ -29,6 +29,31 @@ A alfabetização na idade certa é o pilar mais crítico para o desenvolvimento
 
 ## 🏗️ Arquitetura e Engenharia de Atributos (MLOps)
 
+Abaixo apresentamos o fluxo arquitetural de dados e Machine Learning construído para a Fase 3, focado em alta performance, deploy em microsserviços e observabilidade contínua (Data Drift):
+
+```mermaid
+flowchart TD
+    subgraph Data Engineering [Engenharia de Dados - Camada Gold]
+        A[inep_amostra_real.csv] -->|ingestao_camada_gold.py| B[(Camada Gold .parquet)]
+    end
+
+    subgraph Machine Learning [Treinamento e Otimização]
+        B -->|train_model.py| C{GridSearchCV}
+        C -->|Melhores Hiperparâmetros| D((Modelo Random Forest .pkl))
+    end
+
+    subgraph Produção e MLOps [Serviço e Observabilidade]
+        D -->|Deploy| E[FastAPI Backend]
+        E -->|Gera Logs de Predição| F[(Banco de Dados SQLite)]
+        F -.->|monitor_drift.py| G[Alerta de Data Drift / KS-Test]
+    end
+
+    subgraph Aplicação do Usuário [Frontend]
+        E <-->|Integração em Tempo Real| H[Dashboard Streamlit]
+    end
+```
+
+
 Para mitigar de forma absoluta o vazamento de dados (*data leakage*) e garantir a reprodutibilidade em produção a partir dos dados da **Camada Gold**, o pré-processamento foi encapsulado nativamente em um objeto `Pipeline` do Scikit-Learn:
 
 * **Tratamento de Dados Ausentes:** `SimpleImputer` utilizando a estratégia da mediana para neutralizar ruídos de preenchimento.
