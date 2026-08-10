@@ -293,17 +293,16 @@ python monitor_drift.py
 
 ---
 
-## ?? Interface do Produto Final (Dashboard Enterprise)
-O ecossistema conta com uma interface **SOTA (State-of-the-Art)** construída em Streamlit com design Glassmorphism, que atende tanto à simulação micro (aluno individual) quanto à gestão macro (Clusters K-Means).
+## ğŸ’» Interface do Produto Final (Dashboard Enterprise)
+O ecossistema conta com uma interface **SOTA (State-of-the-Art)** construÃ­da em Streamlit com design Glassmorphism, que atende tanto Ã  simulaÃ§Ã£o micro (aluno individual) quanto Ã  gestÃ£o macro (Clusters K-Means).
 
-### ?? Simulador com Explicabilidade Dinâmica (SHAP)
-Na primeira aba, o usuário testa parâmetros (Frequência Escolar, PIB, etc) e a IA responde em tempo real com o risco de evasão, além de gerar uma auditoria gráfica individual.
+### ğŸ“Š Simulador com Explicabilidade DinÃ¢mica (SHAP)
+Na primeira aba, o usuÃ¡rio testa parÃ¢metros (FrequÃªncia Escolar, PIB, etc) e a IA responde em tempo real com o risco de evasÃ£o, alÃ©m de gerar uma auditoria grÃ¡fica individual.
 
-![Simulador de Predição](images/print_simulador.png)
-![SHAP Dinâmico](images/print_shap.png)
+![Simulador de PrediÃ§Ã£o](images/print_simulador.png)
+![SHAP DinÃ¢mico](images/print_shap.png)
 
-### ??? Visão Macroestratégica (Clusters e KPIs)
-Na segunda aba, os governantes têm acesso a um mapa de calor interativo cruzado com os algoritmos de clusterização para tomada de decisão federal.
+### ğŸ—ºï¸ VisÃ£o MacroestratÃ©gica (Clusters e KPIs)
+Na segunda aba, os governantes tÃªm acesso a um mapa de calor interativo cruzado com os algoritmos de clusterizaÃ§Ã£o para tomada de decisÃ£o federal.
 
 ![Mapa do Brasil](images/print_mapa.png)
-
