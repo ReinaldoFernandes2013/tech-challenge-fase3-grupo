@@ -306,3 +306,8 @@ Na primeira aba, o usuário testa parâmetros (Frequência Escolar, PIB, etc) e 
 Na segunda aba, os governantes têm acesso a um mapa de calor interativo cruzado com os algoritmos de clusterização para tomada de decisão federal.
 
 ![Mapa do Brasil](images/print_mapa.png)
+
+### ⚙️ Arquitetura Backend e MLOps (FastAPI Swagger UI)
+Por baixo dos panos, o ecossistema é sustentado por uma API de alta performance construída em **FastAPI**. Toda a inferência estatística, salvamento de logs em banco de dados SQLite e integração para monitoramento de *Data Drift* acontece nesta camada corporativa.
+
+![Documentação da API Swagger](images/print_api.png)
