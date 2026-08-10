@@ -50,7 +50,13 @@ def executar_clusterizacao():
     plt.savefig(caminho_grafico, dpi=300)
     plt.close()
     
-    print(f"\n✅ Clusterização concluída com sucesso! Gráfico de perfis salvo em: {caminho_grafico}")
+    # 6. Exportar resultado tabular (essencial para rastreabilidade do pipeline — MLOps)
+    os.makedirs('data', exist_ok=True)
+    df[features_cluster + ['perfil_vulnerabilidade_cluster']].rename(
+        columns={'perfil_vulnerabilidade_cluster': 'cluster'}
+    ).to_parquet('data/clusters_resultado.parquet', index=False)
+    print(f"\n✅ Clusterização concluída! Gráfico salvo em: {caminho_grafico}")
+    print(f"✅ Resultado tabular exportado para: data/clusters_resultado.parquet")
 
 if __name__ == "__main__":
     executar_clusterizacao()

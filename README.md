@@ -81,13 +81,18 @@ O Random Forest Classifier é um algoritmo de *Ensemble Learning* baseado na té
 
 ### Relatório de Performance Científica (Conjunto de Teste):
 
-* **Acurácia Global:** 88%
-* **Recall (Classe de Risco):** 89% *(Prioridade absoluta do negócio para minimizar Falsos Negativos e garantir que nenhuma criança vulnerável fique invisível à política pública).*
-* **F1-Score:** 93%
+| Métrica | Valor |
+|---|---|
+| **Acurácia** | 95.6% |
+| **ROC-AUC** | 0.9925 |
+| **F1-Score** | 97.3% |
+| **Conjunto de Teste** | 1.000 registros (20% estratificado) |
+
+> ⚠️ **Nota Metodológica Importante:** Como não temos acesso a notas SAEB individualizadas reais (dado protegido pelo INEP), o *target* (`risco_alfabetizacao`) foi construído pela equipe combinando fatores de risco reconhecidos na literatura educacional (frequência escolar, investimento per capita, vulnerabilidade social e infraestrutura escolar). Por se tratar de uma fórmula determinística e sem ruído, o modelo consegue separar as classes quase perfeitamente — resultado **esperado** nesse cenário de target sintético, não refletindo a performance com dados observacionais reais sujeitos a ruído social. A arquitetura do pipeline já está preparada para substituir o target sintético por notas SAEB reais quando o acesso estiver disponível.
 
 ### Validação Cruzada Estratificada (5-Fold Cross-Validation):
 
-Para garantir a estabilidade do modelo frente a flutuações amostrais e blindar o classificador contra o *overfitting*, aplicamos `StratifiedKFold`. O modelo demonstrou variância nula, confirmando consistência robusta de generalização.
+Para garantir a estabilidade do modelo frente a flutuações amostrais e blindar o classificador contra o *overfitting*, aplicamos `StratifiedKFold`. O modelo demonstrou consistência robusta de generalização entre as dobras.
 
 ---
 

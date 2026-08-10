@@ -1,0 +1,7 @@
+{
+  "acuracia": 0.956,
+  "roc_auc": 0.9925,
+  "f1_score": 0.9728,
+  "n_test": 1000,
+  "nota_metodologica": "Target sintetico: como nao tinhamos acesso a notas SAEB individualizadas reais (dado protegido pelo INEP), o target foi construido pela equipe combinando fatores de risco reconhecidos na literatura educacional (frequencia, investimento, vulnerabilidade, infraestrutura). Por ser uma formula deterministica sem ruido, o modelo separa as classes quase perfeitamente — resultado esperado nesse cenario, nao refletindo a performance que teriamos com dados observacionais reais sujeitos a ruido social."
+}
