@@ -25,6 +25,18 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Gerar Camada Gold (Ingestão)
+      run: |
+        python src/ingestao_camada_gold.py
+
+    - name: Separar Dados de Treino e Teste
+      run: |
+        python src/split_data.py
+
+    - name: Treinar Modelo (Gera o Artefato .pkl)
+      run: |
+        python src/train_model.py
+
     - name: Executar Suíte de Testes com Pytest (Garantia de QA)
       run: |
         pytest -v
