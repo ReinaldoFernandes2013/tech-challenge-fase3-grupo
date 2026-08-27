@@ -10,15 +10,13 @@ import os
 import pickle
 
 def executar_telemetria_e_treino():
-    print("⏳ Carregando conjuntos de dados particionados...")
-    # 1. Carregando os dados de treino e teste persistidos no passo anterior
+    print("Carregando conjuntos de dados particionados...")
     X_train = pd.read_parquet('data/X_train.parquet')
     X_test = pd.read_parquet('data/X_test.parquet')
     y_train = pd.read_parquet('data/y_train.parquet')['target_risco_alfabetizacao']
     y_test = pd.read_parquet('data/y_test.parquet')['target_risco_alfabetizacao']
     
-    print("🏗️ Construindo a Pipeline estruturada de Machine Learning...")
-    # 2. Criando a Pipeline unificada com Feature Selection
+    print("Construindo a Pipeline de Machine Learning...")
     ml_pipeline = Pipeline(steps=[
         ('imputer', SimpleImputer(strategy='median')),
         ('scaler', RobustScaler()),
@@ -26,8 +24,7 @@ def executar_telemetria_e_treino():
         ('classifier', RandomForestClassifier(random_state=42, class_weight='balanced'))
     ])
     
-    print("🚀 Otimizando hiperparâmetros com GridSearchCV (Cross-Validation)...")
-    # 3. Treinamento do Modelo com busca de hiperparâmetros
+    print("Otimizando hiperparametros com GridSearchCV...")
     param_grid = {
         'feature_selection__k': ['all', 4, 3],
         'classifier__n_estimators': [50, 100, 150],
@@ -37,24 +34,22 @@ def executar_telemetria_e_treino():
     grid_search = GridSearchCV(ml_pipeline, param_grid, cv=3, scoring='f1', n_jobs=-1, verbose=1)
     grid_search.fit(X_train, y_train)
     
-    print(f"✅ Melhores parâmetros encontrados: {grid_search.best_params_}")
+    print(f"Melhores parametros encontrados: {grid_search.best_params_}")
     
-    print("📊 Avaliando a capacidade de generalização no conjunto de teste...")
-    # 4. Predição e Avaliação com dados que o modelo nunca viu antes
+    print("Avaliando no conjunto de teste...")
     best_model = grid_search.best_estimator_
     y_pred = best_model.predict(X_test)
     
-    print("\n--- 📝 RELATÓRIO DE PERFORMANCE CIENTÍFICA ---")
+    print("\n--- RELATORIO DE PERFORMANCE ---")
     print(classification_report(y_test, y_pred))
     
-    print("--- 🧮 MATRIZ DE CONFUSÃO ---")
+    print("--- MATRIZ DE CONFUSAO ---")
     print(confusion_matrix(y_test, y_pred))
     
-    # 5. Salvando a pipeline treinada de forma persistente (Pronto para MLOps)
     os.makedirs('models', exist_ok=True)
     with open('models/pipeline_alfabetizacao.pkl', 'wb') as f:
         pickle.dump(best_model, f)
-    print("\n✅ Pipeline de produção treinado e salvo com sucesso em: models/pipeline_alfabetizacao.pkl")
+    print("\nPipeline salvo em: models/pipeline_alfabetizacao.pkl")
 
 if __name__ == "__main__":
     executar_telemetria_e_treino()
