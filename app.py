@@ -241,13 +241,15 @@ else:
                     st.info("💡 As métricas atuais indicam um ambiente escolar e socioeconômico favorável à alfabetização na idade certa.")
                 
                 st.write("")
-                st.markdown("#### 🎯 Cluster Territorial (Governança K-Means)")
+                st.markdown("#### 📋 Classificação de Referência (Regra Heurística)")
                 if pib > 50000:
                     st.markdown("`Perfil 2`: Região Econômica Forte. Monitorar apenas desigualdades internas locais.")
                 elif vulnerabilidade > 0.6:
                     st.markdown("`Perfil 1`: Zona Crítica. Necessita de Intervenção Estrutural Imediata do Governo Federal.")
                 else:
                     st.markdown("`Perfil 0`: Região Padrão. Manter os atuais níveis de investimento educacional.")
+                
+                st.caption("Nota: Esta classificação usa uma regra de referência simplificada baseada em PIB e vulnerabilidade, diferente do modelo K-Means completo usado na aba de Visão Territorial. Serve para dar contexto rápido no simulador individual.")
             else:
                 st.info("Insira os parâmetros governamentais do aluno/município e clique em Executar Predição.")
 
