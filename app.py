@@ -9,6 +9,7 @@ import json
 import urllib.request
 import shap
 from scipy.stats import ks_2samp
+from datetime import datetime
 
 # Configuração da página em modo Wide para aproveitamento máximo da tela
 st.set_page_config(
@@ -228,7 +229,46 @@ else:
                 with st.spinner("Processando Inferência na Nuvem..."):
                     predicao = pipeline.predict(dados_entrada)[0]
                     probabilidade = pipeline.predict_proba(dados_entrada)[0][1]
-                
+
+                # --- GRAVAÇÃO NO BANCO ---
+                try:
+                    conn = sqlite3.connect('predicoes.db')
+                    cursor = conn.cursor()
+                    cursor.execute('''
+                        CREATE TABLE IF NOT EXISTS predicoes (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            timestamp DATETIME,
+                            investimento_por_aluno_rs REAL,
+                            taxa_frequencia_escolar REAL,
+                            pib_per_capita_municipio REAL,
+                            vulnerabilidade_social_index REAL,
+                            infraestrutura_escola_score REAL,
+                            predicao INTEGER,
+                            probabilidade REAL
+                        )
+                    ''')
+                    cursor.execute('''
+                        INSERT INTO predicoes (
+                            timestamp, investimento_por_aluno_rs, taxa_frequencia_escolar,
+                            pib_per_capita_municipio, vulnerabilidade_social_index,
+                            infraestrutura_escola_score, predicao, probabilidade
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    ''', (
+                        datetime.now().isoformat(),
+                        float(dados_entrada['investimento_por_aluno_rs'].iloc[0]),
+                        float(dados_entrada['taxa_frequencia_escolar'].iloc[0]),
+                        float(dados_entrada['pib_per_capita_municipio'].iloc[0]),
+                        float(dados_entrada['vulnerabilidade_social_index'].iloc[0]),
+                        float(dados_entrada['infraestrutura_escola_score'].iloc[0]),
+                        int(predicao),
+                        float(probabilidade)
+                    ))
+                    conn.commit()
+                    conn.close()
+                except Exception as e:
+                    st.error(f"Erro ao gravar no banco: {e}")
+                # -------------------------
+
                 if predicao == 1:
                     st.error(f"🚨 **ALERTA CRÍTICO DE EVASÃO/RETENÇÃO**\n\n**Probabilidade de Risco Computada:** {probabilidade:.1%}")
                     with st.expander("📍 **Plano de Ação Sugerido (Políticas Públicas)**", expanded=True):
