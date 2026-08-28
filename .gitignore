@@ -23,4 +23,5 @@ data/y_test.parquet
 data/dados_gold_prod.parquet
 
 # Modelos Serializados Pesados
-models/*.pklpredicoes.db
+models/*.pkl
+predicoes.db
