@@ -33,22 +33,22 @@ Abaixo apresentamos o fluxo arquitetural de dados e Machine Learning construído
 
 ```mermaid
 flowchart TD
-    subgraph Data Engineering [Engenharia de Dados - Camada Gold]
+    subgraph DataEng ["Engenharia de Dados - Camada Gold"]
         A[inep_amostra_real.csv] -->|ingestao_camada_gold.py| B[(Camada Gold .parquet)]
     end
 
-    subgraph Machine Learning [Treinamento e Otimização]
+    subgraph ML ["Treinamento e Otimização"]
         B -->|train_model.py| C{GridSearchCV}
         C -->|Melhores Hiperparâmetros| D((Modelo Random Forest .pkl))
     end
 
-    subgraph Produção e MLOps [Serviço e Observabilidade]
+    subgraph Producao ["Serviço e Observabilidade"]
         D -->|Deploy| E[FastAPI Backend]
         E -->|Gera Logs de Predição| F[(Banco de Dados SQLite)]
         F -.->|monitor_drift.py| G[Alerta de Data Drift / KS-Test]
     end
 
-    subgraph Aplicação do Usuário [Frontend]
+    subgraph Frontend ["Frontend"]
         E <-->|Integração em Tempo Real| H[Dashboard Streamlit]
     end
 ```
