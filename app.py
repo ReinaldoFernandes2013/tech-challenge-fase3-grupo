@@ -267,7 +267,7 @@ else:
                 st.info("""
                 **Guia Prático para a Banca (Interpretação Global):**
                 * Pontos deslocados para a **Direita (Risco)** demonstram o impacto severo da Baixa Frequência (pontos azuis) e da Alta Vulnerabilidade (pontos vermelhos).
-                * Isso comprova que o modelo aprendeu as correlações corretas e não está sofrendo de Data Leakage, obedecendo às premissas pedagógicas brasileiras.
+                * Isso confirma que o modelo pondera as variáveis na direção esperada pela literatura educacional, consistente com a fórmula determinística usada para construir o target sintético.
                 """)
         else:
             st.warning("⚠️ Imagem do SHAP não encontrada. Execute `python src/explain_model.py`.")
